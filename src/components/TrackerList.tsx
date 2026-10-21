@@ -1,5 +1,15 @@
 import type { Tracker } from '../types'
+import { useEffect, useState } from 'react'
 
+function LocalDate({ date }: { date: string }) {
+  const [formatted, setFormatted] = useState(date)
+
+  useEffect(() => {
+    setFormatted(new Date(date).toLocaleString())
+  }, [date])
+
+  return <>{formatted}</>
+}
 interface TrackerListProps {
   tracker: Tracker[]
 }
@@ -23,7 +33,7 @@ export function TrackerList({ tracker }: TrackerListProps) {
           <p className="text-gray-700">{track.title}</p>
 
           <p className="mb-2 text-sm text-gray-500">
-            {new Date(track.date).toLocaleString()}
+            <LocalDate date={track.date} />
           </p>
 
           <p className="text-gray-700">{track.content}</p>
@@ -32,43 +42,3 @@ export function TrackerList({ tracker }: TrackerListProps) {
     </div>
   )
 }
-
-/* 
-
-Error: Failed to load url ../serverActions/trackerAction (resolved id: ../serverActions/trackerAction) in E:/trackerz/src/routes/index.tsx. Does the file exist?
-    at loadAndTransform (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:20173:31) {
-  code: 'ERR_LOAD_URL',
-  runnerError: Error: RunnerError
-      at reviveInvokeError (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:557:64)
-      at Object.invoke (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:630:11)
-      at async ModuleRunner.getModuleInformation (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1228:7)
-      at async request (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1245:83)
-      at E:/trackerz/src/routes/index.tsx:4:1
-      at async ESModulesEvaluator.runInlinedModule (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:825:3)
-      at async ModuleRunner.directRequest (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1288:59)
-      at async ModuleRunner.cachedRequest (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1195:73)
-      at E:/trackerz/src/routeTree.gen.ts:12:1
-      at async ESModulesEvaluator.runInlinedModule (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:825:3)
-}
-
-
-
-
-Error: Failed to load url ../serverActions/trackerAction (resolved id: ../serverActions/trackerAction) in E:/trackerz/src/routes/index.tsx. Does the file exist?
-    at loadAndTransform (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:20173:31) {
-  code: 'ERR_LOAD_URL',
-  runnerError: Error: RunnerError
-      at reviveInvokeError (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:557:64)
-      at Object.invoke (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:630:11)
-      at async ModuleRunner.getModuleInformation (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1228:7)
-      at async request (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1245:83)
-      at E:/trackerz/src/routes/index.tsx:4:1
-      at async ESModulesEvaluator.runInlinedModule (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:825:3)
-      at async ModuleRunner.directRequest (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1288:59)
-      at async ModuleRunner.cachedRequest (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:1195:73)
-      at E:/trackerz/src/routeTree.gen.ts:12:1
-      at async ESModulesEvaluator.runInlinedModule (file:///E:/trackerz/node_modules/.pnpm/vite@8.3.4_@types+node@22.20.5_jiti@2.7.0/node_modules/vite/dist/node/module-runner.js:825:3)
-}
-
-
-*/

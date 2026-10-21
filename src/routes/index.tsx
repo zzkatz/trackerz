@@ -4,6 +4,9 @@ import { TrackerForm } from '../components/TrackerForm'
 import { TrackerList } from '../components/TrackerList'
 import { getTrackers } from '../serverActions/trackerActions'
 
+import { useEffect, useState } from 'react'
+import { ThemeSlider, type Theme } from '../components/ThemeSlider'
+
 export const Route = createFileRoute('/')({
   validateSearch: z.object({
     page: z.number().int().min(1).catch(1),
@@ -37,12 +40,35 @@ function HomePage() {
     await router.invalidate()
   }
 
+  const [theme, setTheme] = useState<Theme | null>(null)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('tracker-theme')
+
+    if (saved === 'light' || saved === 'dim' || saved === 'dark') {
+      setTheme(saved)
+    } else {
+      setTheme('light')
+    }
+  }, [])
+
+  useEffect(() => {
+    if (theme === null) return
+
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem('tracker-theme', theme)
+  }, [theme])
+
   return (
     <main className="mx-auto max-w-3xl space-y-6 p-6">
-      <header>
-        <h1 className="text-3xl font-bold">Tracker Dashboard</h1>
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Tracker Dashboard</h1>
 
-        <p className="mt-2 text-gray-500">Total trackers: {total}</p>
+          <p className="mt-2 text-gray-500">Total trackers: {total}</p>
+        </div>
+
+        {theme !== null && <ThemeSlider theme={theme} onChange={setTheme} />}
       </header>
 
       <TrackerForm onCreated={handleCreated} />
