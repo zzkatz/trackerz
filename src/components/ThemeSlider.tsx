@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, useState, useEffect } from 'react'
 
 export type Theme = 'light' | 'pastel-pink' | 'pastel-brown' | 'dim' | 'dark'
 

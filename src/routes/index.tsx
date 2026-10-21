@@ -4,8 +4,11 @@ import { TrackerForm } from '../components/TrackerForm'
 import { TrackerList } from '../components/TrackerList'
 import { getTrackers } from '../serverActions/trackerActions'
 
-import { useEffect, useState } from 'react'
-import { ThemeSlider, type Theme } from '../components/ThemeSlider'
+import type { Theme } from '../components/ThemeSlider'
+
+import { ThemeSlider } from '../components/ThemeSlider'
+
+import { useState, useEffect } from 'react'
 
 export const Route = createFileRoute('/')({
   validateSearch: z.object({
@@ -32,6 +35,36 @@ function HomePage() {
 
   const displayTotalPages = Math.max(1, totalPages)
 
+  const [themeState, setThemeState] = useState<Theme>('light')
+  const [themeReady, setThemeReady] = useState(false)
+
+  // Restore the saved theme after hydration.
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('tracker-theme')
+
+    const validThemes: Theme[] = [
+      'light',
+      'pastel-pink',
+      'pastel-brown',
+      'dim',
+      'dark',
+    ]
+
+    if (savedTheme && validThemes.includes(savedTheme as Theme)) {
+      setThemeState(savedTheme as Theme)
+    }
+
+    setThemeReady(true)
+  }, [])
+
+  // Apply and persist the selected theme.
+  useEffect(() => {
+    if (!themeReady) return
+
+    document.documentElement.dataset.theme = themeState
+    localStorage.setItem('tracker-theme', themeState)
+  }, [themeState, themeReady])
+
   async function handleCreated() {
     await navigate({
       search: { page: 1 },
@@ -39,25 +72,6 @@ function HomePage() {
 
     await router.invalidate()
   }
-
-  const [theme, setTheme] = useState<Theme | null>(null)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('tracker-theme')
-
-    if (saved === 'light' || saved === 'dim' || saved === 'dark') {
-      setTheme(saved)
-    } else {
-      setTheme('light')
-    }
-  }, [])
-
-  useEffect(() => {
-    if (theme === null) return
-
-    document.documentElement.dataset.theme = theme
-    localStorage.setItem('tracker-theme', theme)
-  }, [theme])
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 p-6">
@@ -68,7 +82,9 @@ function HomePage() {
           <p className="mt-2 text-gray-500">Total trackers: {total}</p>
         </div>
 
-        {theme !== null && <ThemeSlider theme={theme} onChange={setTheme} />}
+        {themeReady && (
+          <ThemeSlider theme={themeState} onChange={setThemeState} />
+        )}
       </header>
 
       <TrackerForm onCreated={handleCreated} />
